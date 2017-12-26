@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Studio 107 (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Mindy\Bundle\MailBundle\SwiftMailer\Plugins;
 
 use Swift_Events_SendEvent;
@@ -20,7 +29,6 @@ use Swift_Events_SendListener;
  */
 class DefaultSenderPlugin implements Swift_Events_SendListener
 {
-
     /**
      * Email of sender to use in all messages that are sent
      * without any sender information.
@@ -43,7 +51,7 @@ class DefaultSenderPlugin implements Swift_Events_SendListener
      *
      * @var string[]
      */
-    private $handledMessageIds = array();
+    private $handledMessageIds = [];
 
     /**
      * Create a new DefaultSenderPlugin to use a $defaultSenderEmail and $defaultSenderName

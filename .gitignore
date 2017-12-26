@@ -1,6 +1,6 @@
 .DS_Store
 .idea
-*.iml
-*.lock
+composer.lock
 /vendor
-.php_cs.cache
+/coverage
+/Tests/var

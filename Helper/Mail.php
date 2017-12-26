@@ -1,15 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * (c) Studio107 <mail@studio107.ru> http://studio107.ru
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * Studio 107 (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\MailBundle\Helper;
 
-use Mindy\Finder\TemplateFinderInterface;
-use Mindy\Template\Renderer;
+use Mindy\Template\TemplateEngineInterface;
+use RuntimeException;
+use Swift_Attachment;
+use Swift_Message;
 
 class Mail
 {
@@ -18,58 +23,86 @@ class Mail
      */
     protected $mailer;
     /**
-     * @var TemplateFinderInterface
+     * @var TemplateEngineInterface
      */
-    protected $finder;
-    /**
-     * @var Renderer
-     */
-    protected $template;
+    protected $templateEngine;
 
     /**
      * Mail constructor.
      *
      * @param \Swift_Mailer $mailer
-     * @param TemplateFinderInterface $finder
-     * @param Renderer $template
+     * @param TemplateEngineInterface $templateEngine
      */
-    public function __construct(\Swift_Mailer $mailer, TemplateFinderInterface $finder, Renderer $template)
+    public function __construct(\Swift_Mailer $mailer, TemplateEngineInterface $templateEngine)
     {
         $this->mailer = $mailer;
-        $this->finder = $finder;
-        $this->template = $template;
+        $this->templateEngine = $templateEngine;
     }
 
     /**
-     * @param $subject
-     * @param $to
-     * @param $template
+     * @param string $subject
+     * @param string $to
+     * @param string $template
      * @param array $data
-     * @param array $attachments
      *
      * @throws \Exception
      *
      * @return \Swift_Message
      */
-    protected function getMessage($subject, $to, $template, array $data = [], array $attachments = [])
+    public function createMessage(string $subject, string $to, string $template, array $data = [])
     {
-        $message = \Swift_Message::newInstance();
+        $message = new Swift_Message();
 
         $message->setSubject($subject);
         $message->setTo($to);
 
-        if ($this->finder->find($template.'.html')) {
-            $message->setBody($this->template->render($template.'.html', $data), 'text/html');
+        $tpl = pathinfo(basename($template), PATHINFO_FILENAME);
 
-            if ($this->finder->find($template.'.txt')) {
-                $message->addPart($this->template->render($template.'.txt', $data), 'text/plain');
-            }
-        } else {
-            throw new \Exception('Unknown template: '.$template.'.html');
+        $htmlBody = null;
+        try {
+            $htmlBody = $this->templateEngine->render(sprintf('%s.html', $tpl), $data);
+            // @codeCoverageIgnoreStart
+        } catch (RuntimeException $e) {
+            // @codeCoverageIgnoreEnd
         }
 
+        $txtBody = null;
+        try {
+            $txtBody = $this->templateEngine->render(sprintf('%s.txt', $tpl), $data);
+            // @codeCoverageIgnoreStart
+        } catch (RuntimeException $e) {
+            // @codeCoverageIgnoreEnd
+        }
+
+        if ($htmlBody && $txtBody) {
+            $message->setBody($htmlBody, 'text/html');
+            $message->addPart($txtBody, 'text/plain');
+        } else {
+            if ($htmlBody) {
+                $message->setBody($htmlBody, 'text/html');
+            } else {
+                $message->setBody($txtBody, 'text/plain');
+            }
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param Swift_Message $message
+     * @param array $attachments
+     *
+     * @return Swift_Message
+     */
+    public function attach(Swift_Message $message, array $attachments = []): Swift_Message
+    {
         foreach ($attachments as $fileName => $options) {
-            $attachment = \Swift_Attachment::fromPath($fileName);
+            if (is_string($options)) {
+                $fileName = $options;
+                $options = [];
+            }
+
+            $attachment = Swift_Attachment::fromPath($fileName);
             if (!empty($options['fileName'])) {
                 $attachment->setFilename($options['fileName']);
             }
@@ -93,9 +126,10 @@ class Mail
      *
      * @return int
      */
-    public function send($subject, $to, $template, array $data = [], array $attachments = [])
+    public function send($subject, $to, $template, array $data = [], array $attachments = []): int
     {
-        $message = $this->getMessage($subject, $to, $template, $data, $attachments);
+        $message = $this->createMessage($subject, $to, $template, $data);
+        $message = $this->attach($message, $attachments);
 
         return $this->mailer->send($message);
     }

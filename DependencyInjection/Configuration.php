@@ -1,9 +1,12 @@
 <?php
-/**
- * Author: Falaleev Maxim (max107)
- * Email: <max@studio107.ru>
- * Company: Studio107 <http://studio107.ru>
- * Date: 13/03/17 16:38
+
+declare(strict_types=1);
+
+/*
+ * Studio 107 (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\MailBundle\DependencyInjection;
@@ -25,9 +28,9 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('mail');
         $rootNode
             ->children()
-                ->scalarNode('default_from')
-                    ->defaultValue('user@example.com')
-                ->end();
+            ->scalarNode('default_from')->defaultValue('user@example.com')->end()
+            ->scalarNode('default_prefix')->defaultValue('')->end()
+            ->end();
 
         return $treeBuilder;
     }

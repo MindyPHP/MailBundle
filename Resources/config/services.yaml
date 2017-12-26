@@ -1,0 +1,28 @@
+parameters:
+    mindy.mail.default_from: user@example.com
+    mindy.mail.default_name: '%mindy.mail.default_from%'
+    mindy.mail.default_subject_prefix: ''
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    _instanceof:
+        \Swift_Events_SendListener:
+            public: true
+            tags: ['swiftmailer.default.plugin']
+
+    Mindy\Bundle\MailBundle\:
+        resource: '../../*'
+        exclude: '../../{Tests,vendor}'
+
+    Mindy\Bundle\MailBundle\SwiftMailer\Plugins\DefaultSenderPlugin:
+        arguments:
+            - '%mindy.mail.default_from%'
+            - '%mindy.mail.default_name%'
+
+    Mindy\Bundle\MailBundle\SwiftMailer\Plugins\DefaultSubjectPrefixPlugin:
+        arguments:
+            - '%mindy.mail.default_subject_prefix%'
