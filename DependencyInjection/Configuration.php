@@ -28,8 +28,8 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('mail');
         $rootNode
             ->children()
-            ->scalarNode('default_from')->defaultValue('user@example.com')->end()
-            ->scalarNode('default_prefix')->defaultValue('')->end()
+            ->scalarNode('from')->defaultValue(null)->end()
+            ->scalarNode('reply_to')->defaultValue(null)->end()
             ->end();
 
         return $treeBuilder;

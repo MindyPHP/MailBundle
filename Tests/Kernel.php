@@ -13,6 +13,7 @@ namespace Mindy\Bundle\MailBundle\Tests;
 use Mindy\Bundle\MailBundle\MailBundle;
 use Mindy\Bundle\TemplateBundle\TemplateBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
@@ -28,7 +29,8 @@ class Kernel extends BaseKernel
         return [
             new FrameworkBundle(),
             new TemplateBundle(),
-            new MailBundle()
+            new MailBundle(),
+            new SwiftmailerBundle(),
         ];
     }
 

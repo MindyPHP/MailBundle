@@ -30,20 +30,17 @@ use Swift_Events_SendListener;
 class DefaultSenderPlugin implements Swift_Events_SendListener
 {
     /**
-     * Email of sender to use in all messages that are sent
+     * Email and name of sender to use in all messages that are sent
      * without any sender information.
      *
-     * @var string
+     * @var array
      */
-    private $defaultSenderEmail;
+    private $defaultFrom = [];
 
     /**
-     * Name of sender to use in all messages that are sent
-     * without any sender information.
-     *
-     * @var string
+     * @var array
      */
-    private $defaultSenderName;
+    private $defaultReplyTo = [];
 
     /**
      * List if IDs of messages which got sender information set
@@ -57,13 +54,13 @@ class DefaultSenderPlugin implements Swift_Events_SendListener
      * Create a new DefaultSenderPlugin to use a $defaultSenderEmail and $defaultSenderName
      * for all messages that are sent without any sender information.
      *
-     * @param string $defaultSenderEmail
-     * @param string $defaultSenderName
+     * @param array $defaultFrom
+     * @param array $defaultReplyTo
      */
-    public function __construct($defaultSenderEmail, $defaultSenderName = '')
+    public function __construct(array $defaultFrom, array $defaultReplyTo = [])
     {
-        $this->defaultSenderEmail = $defaultSenderEmail;
-        $this->defaultSenderName = $defaultSenderName;
+        $this->defaultFrom = $defaultFrom;
+        $this->defaultReplyTo = $defaultReplyTo;
     }
 
     /**
@@ -76,8 +73,14 @@ class DefaultSenderPlugin implements Swift_Events_SendListener
         $message = $evt->getMessage();
 
         // replace sender
-        if (!count($message->getFrom())) {
-            $message->setFrom($this->defaultSenderEmail, $this->defaultSenderName);
+        if (0 === count($message->getFrom())) {
+            $message->setFrom($this->defaultFrom);
+            $this->handledMessageIds[$message->getId()] = true;
+        }
+
+        // replace sender
+        if (empty($message->getReplyTo())) {
+            $message->setReplyTo($this->defaultReplyTo);
             $this->handledMessageIds[$message->getId()] = true;
         }
     }

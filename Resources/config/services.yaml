@@ -26,3 +26,10 @@ services:
     Mindy\Bundle\MailBundle\SwiftMailer\Plugins\DefaultSubjectPrefixPlugin:
         arguments:
             - '%mindy.mail.default_subject_prefix%'
+
+    Mindy\Bundle\MailBundle\Helper\Mail:
+        public: true
+
+    mindy.bundle.mail.helper.mail:
+        alias: Mindy\Bundle\MailBundle\Helper\Mail
+        public: true
