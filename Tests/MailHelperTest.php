@@ -1,9 +1,13 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: maxim
- * Date: 26/12/2017
- * Time: 18:49
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\MailBundle\Tests;
@@ -36,7 +40,7 @@ class MailHelperTest extends TestCase
         ]);
         $templateEngine = new TemplateEngine(
             $templateFinder,
-            __DIR__ . '/var/mail',
+            __DIR__.'/var/mail',
             LoaderMode::RECOMPILE_ALWAYS
         );
 
@@ -60,7 +64,7 @@ class MailHelperTest extends TestCase
         $this->assertCount(1, $message->getChildren());
 
         $txtPart = current($message->getChildren());
-        /** @var \Swift_MimePart $txtPart */
+        /* @var \Swift_MimePart $txtPart */
         $this->assertSame('text bar', $txtPart->getBody());
     }
 

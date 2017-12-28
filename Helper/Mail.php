@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 /*
- * Studio 107 (c) 2017 Maxim Falaleev
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -30,7 +31,7 @@ class Mail
     /**
      * Mail constructor.
      *
-     * @param \Swift_Mailer $mailer
+     * @param \Swift_Mailer           $mailer
      * @param TemplateEngineInterface $templateEngine
      */
     public function __construct(\Swift_Mailer $mailer, TemplateEngineInterface $templateEngine)
@@ -43,7 +44,7 @@ class Mail
      * @param string $subject
      * @param string $to
      * @param string $template
-     * @param array $data
+     * @param array  $data
      *
      * @throws \Exception
      *
@@ -90,7 +91,7 @@ class Mail
 
     /**
      * @param Swift_Message $message
-     * @param array $attachments
+     * @param array         $attachments
      *
      * @return Swift_Message
      */

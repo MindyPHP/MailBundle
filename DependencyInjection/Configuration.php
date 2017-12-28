@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 /*
- * Studio 107 (c) 2017 Maxim Falaleev
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -28,8 +29,9 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('mail');
         $rootNode
             ->children()
-            ->scalarNode('from')->defaultValue(null)->end()
-            ->scalarNode('reply_to')->defaultValue(null)->end()
+            ->arrayNode('from')->end()
+            ->arrayNode('reply_to')->end()
+            ->scalarNode('subject_prefix')->defaultNull()->end()
             ->end();
 
         return $treeBuilder;

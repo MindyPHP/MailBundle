@@ -1,7 +1,7 @@
 parameters:
-    mindy.mail.default_from: user@example.com
-    mindy.mail.default_name: '%mindy.mail.default_from%'
-    mindy.mail.default_subject_prefix: ''
+    mindy.mail.from: []
+    mindy.mail.reply_to: []
+    mindy.mail.subject_prefix: ''
 
 services:
     _defaults:
@@ -20,12 +20,12 @@ services:
 
     Mindy\Bundle\MailBundle\SwiftMailer\Plugins\DefaultSenderPlugin:
         arguments:
-            - '%mindy.mail.default_from%'
-            - '%mindy.mail.default_name%'
+            - '%mindy.mail.from%'
+            - '%mindy.mail.reply_to%'
 
     Mindy\Bundle\MailBundle\SwiftMailer\Plugins\DefaultSubjectPrefixPlugin:
         arguments:
-            - '%mindy.mail.default_subject_prefix%'
+            - '%mindy.mail.subject_prefix%'
 
     Mindy\Bundle\MailBundle\Helper\Mail:
         public: true
