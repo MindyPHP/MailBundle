@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace Mindy\Bundle\MailBundle\Helper;
 
-use Mindy\Template\TemplateEngineInterface;
+use Mindy\Template\TemplateEngine;
 use RuntimeException;
 use Swift_Attachment;
+use Swift_Mailer;
 use Swift_Message;
 
 class Mail
@@ -24,17 +25,17 @@ class Mail
      */
     protected $mailer;
     /**
-     * @var TemplateEngineInterface
+     * @var TemplateEngine
      */
     protected $templateEngine;
 
     /**
      * Mail constructor.
      *
-     * @param \Swift_Mailer           $mailer
-     * @param TemplateEngineInterface $templateEngine
+     * @param Swift_Mailer   $mailer
+     * @param TemplateEngine $templateEngine
      */
-    public function __construct(\Swift_Mailer $mailer, TemplateEngineInterface $templateEngine)
+    public function __construct(Swift_Mailer $mailer, TemplateEngine $templateEngine)
     {
         $this->mailer = $mailer;
         $this->templateEngine = $templateEngine;
